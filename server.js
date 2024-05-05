@@ -127,7 +127,26 @@ app.get('/showfleets', async (req, res) => {
 app.get('/choosefleet', (req, res) => {
     res.render('choosefleet', { fleets: [] }); // Initialize with empty fleets
 });
-
+app.get('/generateReport', async (req, res) => {
+    try {
+      // Connect to MongoDB
+      const db = await connect();
+      // Define collection
+      const fleetOrdersCollection = db.collection('fleetorders');
+      // Fetch fleet orders from the database
+      const fleetOrders = await fleetOrdersCollection.find().toArray();
+      console.log("yesss",fleetOrders);
+      // Render the genreport.ejs template with fleet orders data
+      res.json(fleetOrders);
+    } catch (error) {
+      console.error("Error generating report:", error);
+      res.status(500).send('Error generating report');
+    }
+  });
+app.get('/genreport', (req, res) => {
+    // Render the genreport.ejs template
+    res.render('genreport');
+});
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
